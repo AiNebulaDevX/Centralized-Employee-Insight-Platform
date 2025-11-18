@@ -1,0 +1,95 @@
+server:
+  port: 8080
+  max-http-header-size: 32KB
+
+jwt:
+  secret: your-secret-key-here-please-change-this-in-production
+  expiration: 86400000  # 24 hours in milliseconds
+
+spring:
+  application:
+    name: user-service
+  
+  datasource:
+    url: jdbc:mysql://localhost:3306/employee_db?useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+    username: employee
+    password: employee123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      max-lifetime: 120000
+      connection-test-query: SELECT 1
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  
+  # Redis configuration - use 'localhost' for local development
+  redis:
+    host: localhost  # Changed from host.docker.internal for local testing
+    port: 6379
+    timeout: 60000
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+  
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: user-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false
+
+  # Actuator endpoints
+  jackson:
+    serialization:
+      indent-output: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+      path-mapping:
+        health: health
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+
+# Logging configuration
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    com.employee: DEBUG
+  file:
+    name: logs/user-service.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

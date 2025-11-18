@@ -1,0 +1,46 @@
+*.class
+*.log
+*.jar
+target/
+node_modules/
+.idea/
+.DS_Store
+# Build directories
+**/target/
+**/build/
+**/bin/
+
+# Logs
+**/logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Node.js
+node_modules/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+*.env
+
+# Shell scripts
+*.sh
+build-all.sh
+create-*.sh
+frontend-setup.sh
+docker-compose.yml
+# Documentation files
+*.md
+!README.mddocker-compose.yml
